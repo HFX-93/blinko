@@ -1,0 +1,23 @@
+name: Build & Export Docker Image
+
+on:
+  workflow_dispatch:  # 可以手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t myapp:latest .
+
+      - name: Save Docker image to tar
+        run: docker save myapp:latest | gzip > myapp_image.tar.gz
+
+      - name: Upload docker image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-img
+          path: myapp_image.tar.gz
